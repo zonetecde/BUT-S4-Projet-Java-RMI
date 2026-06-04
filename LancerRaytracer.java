@@ -27,34 +27,55 @@ public class LancerRaytracer {
         }else{
             System.out.println(aide);
         }
-        
-   
         // création d'une fenêtre 
         Disp disp = new Disp("Raytracer", largeur, hauteur);
         
         // Initialisation d'une scène depuis le modèle 
         Scene scene = new Scene(fichier_description, largeur, hauteur);
-        
-        // Calcul de l'image de la scène les paramètres : 
-        // - x0 et y0 : correspondant au coin haut à gauche
-        // - l et h : hauteur et largeur de l'image calculée
-        // Ici on calcule toute l'image (0,0) -> (largeur, hauteur)
-        
-        int x0 = 0, y0 = 0;
-        int l = largeur, h = hauteur;
-                
+
+        // On découpe l'image en deux dimensions pour avoir 2x2 zones
+        int demiLargeur = largeur / 2;
+        int demiHauteur = hauteur / 2;
+
         // Chronométrage du temps de calcul
         Instant debut = Instant.now();
-        System.out.println("Calcul de l'image :\n - Coordonnées : "+x0+","+y0
-                           +"\n - Taille "+ largeur + "x" + hauteur);
-        Image image = scene.compute(x0, y0, l, h);
+
+        System.out.println("Calcul de l'image :");
+
+        // Première zone : haut gauche
+        // Celle-ci commence à x = 0 et y = 0, et sa taille est de demiLargeur x demiHauteur
+        int x0 = 0;
+        int y0 = 0;
+        int l = demiLargeur;
+        int h = demiHauteur;
+
+        System.out.println(" - Zone haut gauche : coordonnées " + x0 + "," + y0
+                           + " taille " + l + "x" + h);
+
+        // Appel de la méthode de calcul pour cette zone
+        Image imageHautGauche = scene.compute(x0, y0, l, h);
+        disp.setImage(imageHautGauche, x0, y0);
+
+        // Deuxième zone : bas droite
+        // Celle-ci commence à x = demiLargeur et y = demiHauteur, et sa taille est de (largeur - demiLargeur) x (hauteur - demiHauteur)
+        // Note : quand on a une taille PAIRE, demiLargeur x demiLargeur aurait été suffisant, mais quand on a une taille IMPAIRE, il faut faire attention à ne pas dépasser la taille totale de l'image du coup on a fait (largeur - demiLargeur) et (hauteur - demiHauteur)
+        x0 = demiLargeur;
+        y0 = demiHauteur;
+        l = largeur - demiLargeur;
+        h = hauteur - demiHauteur;
+
+        System.out.println(" - Zone bas droite : coordonnées " + x0 + "," + y0
+                           + " taille " + l + "x" + h);
+
+        // Appel de la méthode de calcul pour cette zone
+        Image imageBasDroite = scene.compute(x0, y0, l, h);
+        disp.setImage(imageBasDroite, x0, y0);
+
         Instant fin = Instant.now();
 
         long duree = Duration.between(debut, fin).toMillis();
         
-        System.out.println("Image calculée en :"+duree+" ms");
-        
-        // Affichage de l'image calculée
-        disp.setImage(image, x0, y0);
+        // Affichage du temps de calcul
+        System.out.println("Image calculée en :" + duree + " ms");
     }	
 }
