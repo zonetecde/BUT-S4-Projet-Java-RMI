@@ -94,45 +94,43 @@ public class LancerRaytracer {
             Registry reg = LocateRegistry.getRegistry(ip, port);
             ServiceDistributeur distributeur = (ServiceDistributeur) reg.lookup("distributeur");
 
-            // 2. On récupère les noeuds de calcul dispo
-            ArrayList<ServiceNoeudCalcul> noeuds = new ArrayList<>(distributeur.envoyerClients());
-
-            // si aucun noeud dispo on ne fait rien
-            if (noeuds.isEmpty()) {
-                System.out.println("Aucun noeud de calcul disponible");
-                return;
-            }
-
             System.out.println("Calcul de l'image :");
 
             // 3. On calcule les différentes zones
             // On itère sur les noeuds de calcul dispo et on calcule en parallèle les zones
             // On affiche dès que reçu l'image calculée sur la fenêtre (géré par
             // CalculThread.java)
-            while (!zonesRestantes.isEmpty() && !noeuds.isEmpty()) {
+            while (!zonesRestantes.isEmpty()) {
                 // liste de tout les threads qu'on va créé
                 ArrayList<CalculThread> threads = new ArrayList<>();
 
-                // nbre de calcul qu'on peut faire en simultané
-                // en sachant que si on a plus de zones que de noeuds, on ne peut faire que
-                // autant de calculs que de noeuds
-                int nombreCalculs = Math.min(noeuds.size(), zonesRestantes.size());
+                // nbre de calculs à faire dans cette itération
+                int nombreCalculs = zonesRestantes.size();
 
                 // itère sur les calculs à faire
                 for (int i = 0; i < nombreCalculs; i++) {
-                    // prends le noeud i
-                    ServiceNoeudCalcul noeud = noeuds.get(i);
+                    // demande au service central un noeud de calcul disponible
+                    ServiceNoeudCalcul noeud = distributeur.recupererNoeud();
+
+                    // Si il retourne null c'est qu'il n'a aucun noeud de dispo
+                    if (noeud == null) {
+                        break;
+                    }
                     // prend la zone i à calculer
                     int[] zone = zonesRestantes.get(i);
 
-                    // créé le thread est lance le calcul
-                    CalculThread thread = new CalculThread(noeud, distributeur, noeuds, scene, disp, zone[0], zone[1],
+                    // créé le thread est lance le calcul sur le noeud
+                    CalculThread thread = new CalculThread(noeud, distributeur, scene, disp, zone[0], zone[1],
                             zone[2], zone[3]);
                     threads.add(thread);
                     thread.start();
                 }
 
                 int nombreCalculsEnCours = threads.size();
+                // si aucun calcul n'a été lancé c'est qu'il n'y a plus de noeud de calcul dispo, on arrête la boucle
+                if (nombreCalculsEnCours == 0) {
+                    break;
+                }
 
                 // Att la fin de tout les threads pour voir quelles zones ont échoué
                 for (CalculThread thread : threads) {

@@ -1,5 +1,4 @@
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 import raytracer.Disp;
 import raytracer.Image;
@@ -11,7 +10,6 @@ class CalculThread extends Thread {
     // on doit passer tous ces attributs à notre thread car il en a besoin pour faire son travail
     private ServiceNoeudCalcul noeud;
     private ServiceDistributeur distributeur;
-    private ArrayList<ServiceNoeudCalcul> noeudsDisponibles;
     private Scene scene;
     private Disp disp;
     private int x0;
@@ -25,16 +23,13 @@ class CalculThread extends Thread {
      *
      * @param noeud noeud de calcul pour calculer la zone
      * @param distributeur distributeur central
-     * @param noeudsDisponibles liste des noeuds dispo
-     * @param scene scène 
+     * @param scene scène
      * @param disp fenêtre d'affichage pour afficher une fois le calcul terminé
      */
     public CalculThread(ServiceNoeudCalcul noeud, ServiceDistributeur distributeur,
-                        ArrayList<ServiceNoeudCalcul> noeudsDisponibles,
                         Scene scene, Disp disp, int x0, int y0, int w, int h) {
         this.noeud = noeud;
         this.distributeur = distributeur;
-        this.noeudsDisponibles = noeudsDisponibles;
         this.scene = scene;
         this.disp = disp;
         this.x0 = x0;
@@ -49,18 +44,11 @@ class CalculThread extends Thread {
      */
     public void run() {
         try {
-            // calcul via le noeud de calcul distant la zone
+            // calcul via le noeud de calcul distant de la zone
             Image imageZone = noeud.compute(scene, x0, y0, w, h);
             succes = true;
             afficheZone(imageZone);
         } catch (RemoteException e) {
-            // si le noeud ne répond pas, on le retire de la liste des noeuds dispo
-            // on met ça en synchronized car un seul thread doit pouvoir modifier
-            // ce tableau à la fois
-            synchronized (noeudsDisponibles) {
-                noeudsDisponibles.remove(noeud);
-            }
-
             try {
                 // le supprime aussi coté distributeur
                 distributeur.supprimerClient(noeud);
@@ -73,7 +61,7 @@ class CalculThread extends Thread {
     /**
      * Affiche la zone calculée dans la fenêtre
      *
-     * @param imageZone sous-image 
+     * @param imageZone sous-image
      */
     private void afficheZone(Image imageZone) {
         for (int y = 0; y < imageZone.getHeight(); y++) {
@@ -86,6 +74,8 @@ class CalculThread extends Thread {
 
     /**
      * Indique si le calcul de la zone a réussi
+     *
+     * @return true si le calcul a réussi, false sinon
      */
     public boolean estSucces() {
         return succes;
