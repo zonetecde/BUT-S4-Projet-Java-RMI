@@ -23,7 +23,7 @@ public class NoeudCalcul implements  ServiceNoeudCalcul{
         String host = "";
         try{
             host = RemoteServer.getClientHost();
-            System.out.println("id client :" + host);
+            // System.out.println("id client :" + host);
         }catch(ServerNotActiveException e) {
             System.out.println("ID client introuvable");
         }
