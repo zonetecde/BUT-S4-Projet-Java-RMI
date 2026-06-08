@@ -8,13 +8,13 @@ import java.rmi.registry.LocateRegistry;
 public class LancerServiceDistributeur{
     public static void main (String args[]) {
         try {
-//Déclarer l'objet
+            // déclare l'objet partagé
             Distributeur o = new Distributeur();
-//Transformer l'objet en service
+            // le transforme en service
             ServiceDistributeur s = (ServiceDistributeur) UnicastRemoteObject.exportObject(o, 0);
-//Récuperer l'annuaire
+            // recup l'annuaire
             Registry reg = LocateRegistry.getRegistry(1099);
-//Lier annuaire et service
+            // ajoute l'objet dans l'annuaire   
             reg.rebind("distributeur", s);
         } catch (ConnectException e) {
             System.out.println("L'annuaire n'est pas accessible ou pas lancé");

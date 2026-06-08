@@ -50,6 +50,19 @@ public class LancerRaytracer {
     }
      
     public static void main(String args[]){
+        // Args : ip du point central, port de l'annuaire du point central, nbre de "zone" sur une ligne
+        if(args.length < 3){
+            System.out.println("Utilisation: java LancerRaytracer ip_point_central port_annuaire nbre_zone_par_ligne");
+        }
+
+        String ip = "localhost";
+        int port = 1099;
+        int nbrZone = 6;
+
+        ip = args[0];
+        port = Int.parse(args[1]);
+        nbrZone = Int.parse(args[2]);
+
 
         // Le fichier de description de la scène si pas fournie
         String fichier_description="simple.txt";
@@ -65,9 +78,24 @@ public class LancerRaytracer {
         // Initialisation d'une scène depuis le modèle 
         Scene scene = new Scene(fichier_description, largeur, hauteur);
 
-
         // Chronométrage du temps de calcul
         Instant debut = Instant.now();
+
+        // PARTIE RMI
+        // 1. On récupère le service distributeur
+        // Trouve l'annaire du point central
+
+        Registry reg = LocateRegistry.getRegistry (ip, port);
+
+	  c = (ServiceDistributeur) reg.lookup("distributeur");
+
+        // 2. On récupère les noeuds de calcul dispo
+
+        // 3. On calcul les différentes zones
+
+        // 4. On itère sur les noeuds de calcul dispo et on calcul en parallèle les noeuds
+
+        // 5. On affiche dès que reçu l'image calculé sur la fenetre
 
         System.out.println("Calcul de l'image :");
 
