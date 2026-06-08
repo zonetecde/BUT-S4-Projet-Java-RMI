@@ -8,6 +8,7 @@ public class Distributeur implements ServiceDistributeur{
 
     public void enregistrerClient(ServiceNoeudCalcul c) {
         services.add(c) ;
+        System.out.println("Nouveau noeud de calcul disponible");
     }
 
     public ArrayList<ServiceNoeudCalcul> envoyerClients() {
