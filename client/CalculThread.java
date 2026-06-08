@@ -48,6 +48,8 @@ class CalculThread extends Thread {
             Image imageZone = noeud.compute(scene, x0, y0, w, h);
             succes = true;
             afficheZone(imageZone);
+            // Libère le noeud une fois le calcul terminé
+            distributeur.libererNoeud(noeud);
         } catch (RemoteException e) {
             try {
                 // le supprime aussi coté distributeur

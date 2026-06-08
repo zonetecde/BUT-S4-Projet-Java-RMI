@@ -11,4 +11,5 @@ public interface ServiceDistributeur extends Remote {
 
     public void supprimerClient(ServiceNoeudCalcul snc) throws RemoteException;
 
+    public void libererNoeud(ServiceNoeudCalcul snc) throws RemoteException;
 }

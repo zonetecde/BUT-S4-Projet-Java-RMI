@@ -13,38 +13,54 @@ public class Distributeur implements ServiceDistributeur{
     /**
      * Enregistre un nouveau noeud de calcul
      */
-    public void enregistrerClient(ServiceNoeudCalcul c) {
+    public synchronized void enregistrerClient(ServiceNoeudCalcul c) {
         services.add(c);
         System.out.println("Nouveau noeud de calcul disponible");
     }
 
     /**
      * Envoie un noeud de calcul disponible
+     * Le noeud est considéré comme occupé tant qu'il n'a pas été libéré
      */
-    public ServiceNoeudCalcul recupererNoeud() {
+    public synchronized ServiceNoeudCalcul recupererNoeud() {
         if (services.isEmpty()) {
             return null;
         }
 
-        // prend le noeud à la position du curseur      
-        ServiceNoeudCalcul service = services.get(curseur);
-        // avance le curseur de 1, et le remet à 0 s'il dépasse la taille de la liste
-        curseur = (curseur + 1) % services.size();
+        // ajuste le curseur s'il dépasse la taille
+        if (curseur >= services.size()) {
+            curseur = 0;
+        }
+
+        // retire le noeud à la position du curseur car il est considéré comme occupé
+        ServiceNoeudCalcul service = services.remove(curseur);
+
+        // réinitialise le curseur si nécessaire après le retrait
+        if (curseur >= services.size()) {
+            curseur = 0;
+        }
+
         return service;
+    }
+
+    /**
+     * Remet un noeud de calcul après la fin de son calcul afin qu'il puisse être réutilisé pour d'autres calculs
+     */
+    public synchronized void libererNoeud(ServiceNoeudCalcul c) {
+        services.add(c);
+        System.out.println("Noeud de calcul libéré");
     }
 
     /**
      * Supprime un noeud de calcul
      */
-    public void supprimerClient(ServiceNoeudCalcul c) {
+    public synchronized void supprimerClient(ServiceNoeudCalcul c) {
         services.remove(c);
 
-        // Si on a plus de noeud dispo on met le cursuer à 0
-        // sinon on calcul grace au modulo la nouvelle pos du curseur
         if (services.isEmpty()) {
             curseur = 0;
-        } else {
-            curseur = curseur % services.size();
+        } else if (curseur >= services.size()) {
+            curseur = 0;
         }
         System.out.println("Noeud de calcul supprimé");
     }
