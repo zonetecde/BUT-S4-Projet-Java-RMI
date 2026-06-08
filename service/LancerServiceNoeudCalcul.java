@@ -10,12 +10,16 @@ public class LancerServiceNoeudCalcul {
         try {
             // on commence par déclarer l'objet partagé
             NoeudCalcul o = new NoeudCalcul();
+
             // on le tranforme en service
             ServiceNoeudCalcul s = (ServiceNoeudCalcul) UnicastRemoteObject.exportObject(o, 0);
+
             // recup l'annuaire
             Registry reg = LocateRegistry.getRegistry(1099);
+
             // on recup ensuite le distributeur et on s'y enregistre
             ServiceDistributeur distributeur = (ServiceDistributeur) reg.lookup("distributeur");
+            
             distributeur.enregistrerClient(s);
         } catch (ConnectException e) {
             System.out.println("L'annuaire n'est pas accessible ou pas lancé");
