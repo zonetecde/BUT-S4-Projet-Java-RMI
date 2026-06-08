@@ -58,9 +58,9 @@ public class LancerRaytracer {
 
     public static void main(String args[]) {
         // Args : ip du point central, port de l'annuaire du point central, nbre de
-        // "zone" sur une ligne
+        // "zone" sur une ligne, largeur et hauteur (optionnelles, défaut 512)
         if (args.length < 3) {
-            System.out.println("Utilisation: java LancerRaytracer ip_point_central port_annuaire nbre_zone_par_ligne");
+            System.out.println("Utilisation: java LancerRaytracer ip_point_central port_annuaire nbre_zone_par_ligne [largeur] [hauteur]");
             return;
         }
 
@@ -71,8 +71,9 @@ public class LancerRaytracer {
         // Le fichier de description de la scène si pas fournie
         String fichier_description = "simple.txt";
 
-        // largeur et hauteur par défaut de l'image à reconstruire
-        int largeur = 512, hauteur = 512;
+        // largeur et hauteur de l'image si données
+        int largeur = (args.length >= 4) ? Integer.parseInt(args[3]) : 512;
+        int hauteur = (args.length >= 5) ? Integer.parseInt(args[4]) : 512;
 
         int[][] zones = calculerZones(nbrZone, largeur, hauteur);
         // list qui va contenir toutes les zones qui ont échoué a être calculé
