@@ -127,9 +127,14 @@ public class LancerRaytracer {
                 }
 
                 int nombreCalculsEnCours = threads.size();
-                // si aucun calcul n'a été lancé c'est qu'il n'y a plus de noeud de calcul dispo, on arrête la boucle
+                // si aucun calcul n'a été lancé, on attend qu'un noeud se libère ou qu'un nouveau s'enregistre
                 if (nombreCalculsEnCours == 0) {
-                    break;
+                    try {
+                        // met un sleep pour pas spam le distributeur
+                        Thread.sleep(200);
+                    } catch (InterruptedException ignored) {
+                    }
+                    continue;
                 }
 
                 // Att la fin de tout les threads pour voir quelles zones ont échoué
@@ -153,10 +158,6 @@ public class LancerRaytracer {
                 for (int[] zoneEchec : zonesEnEchec) {
                     zonesRestantes.add(zoneEchec);
                 }
-            }
-
-            if (!zonesRestantes.isEmpty()) {
-                System.out.println("Plus de noeud dispo; des zones n'ont pas pu être calculées.");
             }
         } catch (Exception e) {
             System.out.println("Erreur lors du calcul : " + e);
