@@ -3,8 +3,8 @@ import java.rmi.RemoteException;
 import raytracer.Disp;
 import raytracer.Image;
 import raytracer.Scene;
-import service.ServiceDistributeur;
-import service.ServiceNoeudCalcul;
+import service.distributeur.ServiceDistributeur;
+import service.noeud.ServiceNoeudCalcul;
 
 class CalculThread extends Thread {
     // on doit passer tous ces attributs à notre thread car il en a besoin pour faire son travail

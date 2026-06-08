@@ -1,6 +1,7 @@
-package service;
+package service.distributeur;
 
 import java.util.ArrayList;
+import service.noeud.ServiceNoeudCalcul;
 
 public class Distributeur implements ServiceDistributeur{
     // liste des services de noeuds de calcul disponibles

@@ -1,9 +1,10 @@
-package service;
+package service.noeud;
 
 import java.rmi.ConnectException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import service.distributeur.ServiceDistributeur;
 
 public class LancerServiceNoeudCalcul {
     public static void main(String args[]) {

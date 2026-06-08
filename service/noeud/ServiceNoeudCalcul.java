@@ -1,4 +1,4 @@
-package service;
+package service.noeud;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -1,7 +1,8 @@
-package service;
+package service.distributeur;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import service.noeud.ServiceNoeudCalcul;
 
 public interface ServiceDistributeur extends Remote {
     public void enregistrerClient(ServiceNoeudCalcul snc) throws RemoteException;

@@ -1,4 +1,4 @@
-package service;
+package service.noeud;
 
 import raytracer.Image;
 import raytracer.Scene;

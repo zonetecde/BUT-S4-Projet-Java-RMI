@@ -1,4 +1,4 @@
-package service;
+package service.distributeur;
 
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.ConnectException;

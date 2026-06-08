@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 import raytracer.Disp;
 import raytracer.Scene;
-import service.ServiceDistributeur;
-import service.ServiceNoeudCalcul;
+import service.distributeur.ServiceDistributeur;
+import service.noeud.ServiceNoeudCalcul;
 
 public class LancerRaytracer {
 
